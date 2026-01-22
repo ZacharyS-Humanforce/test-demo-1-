@@ -1,3 +1,5 @@
+import {useEffect, useState} from 'react'
+import {sanity} from './sanityClient'
 
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
@@ -12,7 +14,18 @@ import Integrations from '@/components/Integrations';
 import Footer from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
 
-function App() {
+function App() {const [cms, setCms] = useState(null)
+
+useEffect(() => {
+  sanity
+    .fetch(
+      `*[_type == "page" && slug.current == $slug][0]{heroTitle, heroText}`,
+      {slug: 'home'}
+    )
+    .then(setCms)
+    .catch(console.error)
+}, [])
+
   useEffect(() => {
     // Smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
